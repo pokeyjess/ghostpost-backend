@@ -5,14 +5,16 @@ from rest_framework.response import Response
 from api.serializers import PostSerializer
 from ghostpost.models import Posts
 
-# https://www.django-rest-framework.org/api-guide/viewsets/#marking-extra-actions-for-routing
-
-# https://stackoverflow.com/questions/22063748/django-get-returned-more-than-one-topic
-# https://docs.djangoproject.com/en/3.1/ref/class-based-views/mixins-single-object/
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Posts.objects.all().order_by('-post_time')
     serializer_class = PostSerializer
+
+    @action(detail=False)
+    def votes(self, request):
+        posts = Posts.objects.all().order_by('-total_votes')
+        serializer = self.get_serializer(posts, many=True)
+        return Response(serializer.data)
  
     @action(detail=True, methods=['get'])
     def up_vote(self, request, pk=None):
@@ -40,4 +42,10 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(roasts, many=True)
         return Response(serializer.data)
     
+# https://www.django-rest-framework.org/api-guide/viewsets/#marking-extra-actions-for-routing
+
+# https://stackoverflow.com/questions/22063748/django-get-returned-more-than-one-topic
+# https://docs.djangoproject.com/en/3.1/ref/class-based-views/mixins-single-object/
+
+# https://www.django-rest-framework.org/api-guide/responses/
 
