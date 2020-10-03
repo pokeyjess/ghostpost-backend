@@ -16,14 +16,14 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data)
  
-    @action(detail=True, methods=['get'])
+    @action(detail=True, methods=['get', 'post'])
     def up_vote(self, request, pk=None):
         vote = self.get_object()
         vote.total_votes += 1
         vote.save()
         return Response(vote.total_votes)
         
-    @action(detail=True, methods=['get'])
+    @action(detail=True, methods=['get', 'post'])
     def down_vote(self, request, pk=None):
         vote = self.get_object()
         vote.total_votes -= 1
@@ -42,6 +42,7 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(roasts, many=True)
         return Response(serializer.data)
     
+
 # https://www.django-rest-framework.org/api-guide/viewsets/#marking-extra-actions-for-routing
 
 # https://stackoverflow.com/questions/22063748/django-get-returned-more-than-one-topic
